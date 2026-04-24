@@ -630,7 +630,7 @@
       </div>
     </div>
     <h1>Application Entry Portal</h1>
-    <p>Record a new candidate admission — all mandatory fields must be filled</p>
+    <p>Record a new candidate application — all mandatory fields must be filled</p>
   </div>
 </header>
 
@@ -989,7 +989,6 @@
             <input type="text" id="searchBox" class="search-input" placeholder="Search name, email, contact…">
             <button class="btn btn-primary btn-sm" onclick="loadDashboard()">⟳ Refresh</button>
             <button class="btn btn-secondary btn-sm" onclick="exportCSV()">⬇ CSV</button>
-            <button class="btn btn-secondary btn-sm" onclick="logoutDashboard()">Lock</button>
           </div>
         </div>
 
@@ -1033,21 +1032,6 @@
     <span>Dashboard</span>
   </button>
 </nav>
-
-<!-- ══════════════════ PASSWORD MODAL ══════════════════ -->
-<div class="pwd-overlay" id="pwdOverlay">
-  <div class="pwd-modal">
-    <div class="pwd-icon">🔒</div>
-    <div class="pwd-title">Staff Access</div>
-    <div class="pwd-desc">Enter password to view the applications dashboard</div>
-    <input type="password" id="pwdInput" class="pwd-input" placeholder="••••••••" autocomplete="off">
-    <div class="pwd-error" id="pwdError"></div>
-    <div class="pwd-btn-row">
-      <button class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
-      <button class="btn btn-primary" id="unlockBtn" onclick="checkPassword()">Unlock</button>
-    </div>
-  </div>
-</div>
 
 <div class="toast-container" id="toastContainer"></div>
 
@@ -1219,74 +1203,13 @@ function switchPage(pageId) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// PASSWORD MODAL
+// DASHBOARD ACCESS (PIN sent silently in background)
 // ══════════════════════════════════════════════════════════════════════════
-const pwdOverlay = document.getElementById("pwdOverlay");
-const pwdInput = document.getElementById("pwdInput");
-const pwdError = document.getElementById("pwdError");
-const unlockBtn = document.getElementById("unlockBtn");
-let dashboardPassword = sessionStorage.getItem("dashPwd") || "";
+const DASHBOARD_PIN = "Higher2026"; // matches Apps Script DASHBOARD_PIN
 
 function requestDashboard() {
-  if (dashboardPassword) {
-    switchPage("pageDashboard");
-    loadDashboard();
-  } else {
-    openPasswordModal();
-  }
-}
-
-function openPasswordModal() {
-  pwdError.textContent = "";
-  pwdInput.value = "";
-  pwdOverlay.classList.add("show");
-  setTimeout(() => pwdInput.focus(), 100);
-}
-
-function closePasswordModal() {
-  pwdOverlay.classList.remove("show");
-}
-
-async function checkPassword() {
-  const pwd = pwdInput.value.trim();
-  if (!pwd) { pwdError.textContent = "Enter the password"; return; }
-
-  unlockBtn.disabled = true;
-  unlockBtn.innerHTML = '<span class="spinner"></span>Verifying…';
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "verifyPassword", password: pwd }),
-    });
-    const json = await res.json();
-    if (json.status === "success") {
-      dashboardPassword = pwd;
-      sessionStorage.setItem("dashPwd", pwd);
-      closePasswordModal();
-      switchPage("pageDashboard");
-      loadDashboard();
-    } else {
-      pwdError.textContent = "Incorrect password";
-    }
-  } catch (err) {
-    pwdError.textContent = "Network error — try again";
-  } finally {
-    unlockBtn.disabled = false;
-    unlockBtn.innerHTML = "Unlock";
-  }
-}
-
-pwdInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") checkPassword();
-});
-
-function logoutDashboard() {
-  dashboardPassword = "";
-  sessionStorage.removeItem("dashPwd");
-  switchPage("pageApply");
-  toast("Dashboard locked", "success");
+  switchPage("pageDashboard");
+  loadDashboard();
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -1306,16 +1229,11 @@ async function loadDashboard() {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "getDashboard", password: dashboardPassword }),
+      body: JSON.stringify({ action: "getDashboard", password: DASHBOARD_PIN }),
     });
     const json = await res.json();
 
     if (json.status !== "success") {
-      if (json.message === "Unauthorized") {
-        logoutDashboard();
-        openPasswordModal();
-        return;
-      }
       throw new Error(json.message || "Failed to load data");
     }
 
