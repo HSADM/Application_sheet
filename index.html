@@ -683,6 +683,7 @@
           <div class="field-error">Please select a manager</div>
         </div>
 
+
         <!-- ═══ Section 2: Application Details ═══ -->
         <div class="section-title">Application Details</div>
 
@@ -708,12 +709,8 @@
           <label>Application Type <span class="req">*</span></label>
           <select name="Application Type" required>
             <option value="">Select type</option>
-            <option>UG (Undergraduate)</option>
-            <option>PG (Postgraduate)</option>
-            <option>Diploma</option>
-            <option>Certificate</option>
-            <option>PhD</option>
-            <option>Online / Distance</option>
+            <option>Paid</option>
+            <option>Free</option>
           </select>
           <div class="field-error">Please select application type</div>
         </div>
@@ -722,14 +719,14 @@
           <label>Application Status <span class="req">*</span></label>
           <select name="Application Status" required>
             <option value="">Select status</option>
-            <option>Documents Pending</option>
-            <option>Fee Pending</option>
-            <option>Under Review</option>
-            <option>Verified</option>
-            <option>Admitted</option>
-            <option>Rejected</option>
-            <option>Withdrawn</option>
-            <option>On Hold</option>
+            <option>Application Done</option>
+            <option>Half Form</option>
+            <option>Test Pending</option>
+            <option>PI Pending</option>
+            <option>Application Cancelled</option>
+            <option>Application Hold</option>
+            <option>Admission Done</option>
+            <option>Admission Cancelled</option>
           </select>
           <div class="field-error">Please select status</div>
         </div>
@@ -776,15 +773,51 @@
           <label>Source</label>
           <select name="Source">
             <option value="">Select source (optional)</option>
-            <option>Friend / Family</option>
-            <option>Social Media</option>
-            <option>Google Search</option>
-            <option>Counsellor / Agent</option>
-            <option>Advertisement</option>
-            <option>Education Fair</option>
-            <option>School / College</option>
-            <option>Walk-in</option>
-            <option>Other</option>
+            <option>Alliance_G</option>
+            <option>Alliance_M</option>
+            <option>Amity G</option>
+            <option>Amity_D</option>
+            <option>Amity_Dp</option>
+            <option>Amity_M</option>
+            <option>Bangalore Ab</option>
+            <option>Bangalore R</option>
+            <option>Bangalore_PS</option>
+            <option>BGU_G</option>
+            <option>Cutm G</option>
+            <option>CvRaman_G</option>
+            <option>Delhi A</option>
+            <option>Delhi_M</option>
+            <option>Design</option>
+            <option>Driems_G</option>
+            <option>DU25</option>
+            <option>DU26</option>
+            <option>Gift G</option>
+            <option>Jaipur_A</option>
+            <option>Jaipur_Ax</option>
+            <option>Lead_IM</option>
+            <option>Lead_Ntn</option>
+            <option>Lead_V</option>
+            <option>Leads_A</option>
+            <option>Leads_DU</option>
+            <option>Lead_P26</option>
+            <option>MBA_L</option>
+            <option>Mumbai N</option>
+            <option>Odisha K</option>
+            <option>Odisha SG</option>
+            <option>Odisha_B</option>
+            <option>Odisha_FB</option>
+            <option>Odisha_I</option>
+            <option>Odisha_J</option>
+            <option>Odisha_JG</option>
+            <option>Odisha_S</option>
+            <option>Old Leads</option>
+            <option>Reference</option>
+            <option>SOA_G</option>
+            <option>V_Design</option>
+            <option>Others</option>
+            <option>Presidency_G</option>
+            <option>Lead_MT</option>
+            <option>RICS</option>
           </select>
         </div>
 
@@ -793,6 +826,7 @@
           <input type="text" name="Referral Code" placeholder="If applicable">
           <div class="hint">Leave blank if none</div>
         </div>
+
 
         <div class="field">
           <label>State <span class="req">*</span></label>
@@ -855,18 +889,18 @@
           <label>University Name <span class="req">*</span></label>
           <select name="University Name" required>
             <option value="">Select university</option>
-            <option>Amity University</option>
-            <option>Alliance University</option>
-            <option>CV Raman University</option>
-            <option>GLA</option>
-            <option>UPES</option>
-            <option>Pearl University</option>
-            <option>Chandigarh University</option>
-            <option>Presidency University</option>
-            <option>KU</option>
+            <option>Alliance</option>
+            <option>Amity</option>
+            <option>Chandigarh</option>
+            <option>CV Raman</option>
+            <option>GIFT</option>
+            <option>DRIEMS</option>
+            <option>GEC</option>
+            <option>Pearl</option>
+            <option>KU/UID</option>
             <option>UAI</option>
-            <option>Driems University</option>
-            <option>GIFT University</option>
+            <option>Presidency</option>
+            <option>UPES</option>
           </select>
           <div class="field-error">Please select university</div>
         </div>
@@ -875,16 +909,29 @@
           <label>Campus <span class="req">*</span></label>
           <select name="Campus" required>
             <option value="">Select campus</option>
-            <option>Mumbai</option>
-            <option>Gurugram</option>
-            <option>Raipur</option>
             <option>Bengaluru</option>
-            <option>Jaipur</option>
-            <option>Lucknow</option>
+            <option>Mumbai</option>
             <option>Gwalior</option>
-            <option>Unnao</option>
+            <option>Raipur</option>
+            <option>Jaipur</option>
+            <option>Gurugram</option>
+            <option>Lucknow</option>
+            <option>City Campus</option>
+            <option>Central Campus</option>
+            <option>Noida</option>
+            <option>Dehradun</option>
+            <option>Delhi NCR</option>
+            <option>Ahmedabad</option>
+            <option>Gandhinagar</option>
+            <option>Paralakhemundi</option>
+            <option>Balasore</option>
+            <option>Vijayanagram</option>
+            <option>Bhubaneswar</option>
             <option>Mohali</option>
-            <option>Online / Distance</option>
+            <option>Unnao</option>
+            <option>Delhi West</option>
+            <option>Delhi South</option>
+            <option>Hyderabad</option>
           </select>
           <div class="field-error">Please select campus</div>
         </div>
@@ -893,34 +940,37 @@
           <label>Stream <span class="req">*</span></label>
           <select name="Stream" required>
             <option value="">Select stream</option>
-            <option>Science (PCM)</option>
-            <option>Science (PCB)</option>
-            <option>Science (PCMB)</option>
-            <option>Commerce</option>
-            <option>Commerce with Maths</option>
-            <option>Arts / Humanities</option>
-            <option>Management</option>
-            <option>Engineering</option>
-            <option>Law</option>
-            <option>Medical</option>
-            <option>Design</option>
-            <option>Vocational</option>
-            <option>Other</option>
+            <option>UG</option>
+            <option>PG</option>
+            <option>Ph.D</option>
+            <option>Diploma</option>
           </select>
           <div class="field-error">Please select stream</div>
         </div>
 
         <div class="field">
           <label>Programme Selected <span class="req">*</span></label>
-          <input type="text" name="Programme Selected" placeholder="e.g. B.Tech, MBA, BBA" required>
+          <select name="Programme Selected" required>
+            <option value="">Select programme</option>
+            <option>B.Com</option>
+            <option>B.Design</option>
+            <option>B.Sc</option>
+            <option>B.Tech</option>
+            <option>BA</option>
+            <option>Bachelors</option>
+            <option>BBA</option>
+            <option>Diploma</option>
+            <option>M.Sc</option>
+            <option>MA</option>
+            <option>Masters</option>
+            <option>MBA</option>
+            <option>Ph.D</option>
+            <option>M.Design</option>
+            <option>Others</option>
+          </select>
           <div class="field-error">Programme is required</div>
         </div>
 
-        <div class="field">
-          <label>Course Selected <span class="req">*</span></label>
-          <input type="text" name="Course Selected" placeholder="e.g. B.Tech Biotechnology, MBA July" required>
-          <div class="field-error">Course selected is required</div>
-        </div>
 
         <div class="field full">
           <label>Course Specialization <span class="req">*</span></label>
@@ -1151,7 +1201,6 @@ function showSuccessScreen(data) {
     ["University", data["University Name"]],
     ["Campus", data["Campus"]],
     ["Programme", data["Programme Selected"]],
-    ["Course", data["Course Selected"]],
     ["Specialization", data["Course Specialization"]],
     ["Application Type", data["Application Type"]],
     ["Status", data["Application Status"]],
@@ -1304,7 +1353,6 @@ function renderTable(entries) {
       <td>${escapeHtml(e["University Name"] || "")}</td>
       <td>${escapeHtml(e["Campus"] || "")}</td>
       <td>${escapeHtml(e["Programme Selected"] || "")}</td>
-      <td>${escapeHtml(e["Course Selected"] || "")}</td>
       <td>${escapeHtml(e["Course Specialization"] || "")}</td>
       <td>${renderStatus(e["Application Status"])}</td>
       <td>${escapeHtml(e["Counsellor Name"] || "")}</td>
@@ -1327,7 +1375,6 @@ function renderTable(entries) {
             <th>University</th>
             <th>Campus</th>
             <th>Programme</th>
-            <th>Course</th>
             <th>Specialization</th>
             <th>Status</th>
             <th>Counsellor</th>
@@ -1445,7 +1492,7 @@ function exportCSV() {
     "Admission Date", "Application Type", "Application Status",
     "User ID", "Password", "Alternate Number",
     "State", "City", "Source",
-    "University Name", "Stream", "Course Selected", "Course Specialization",
+    "University Name", "Stream", "Course Specialization",
     "Course Fee", "Semester Fee", "Remarks",
     "Application Date"
   ];
