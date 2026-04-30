@@ -1327,7 +1327,7 @@ function parseDate(str) {
 }
 
 function populateFilters(entries) {
-  const uniq = (key) => [...new Set(entries.map(e => (e[key] || "").toString()).filter(Boolean))].sort();
+  const uniq = (key) => [...new Set(entries.map(e => (e[key] || "").toString().trim()).filter(Boolean))].sort();
   const fill = (selEl, values, label) => {
     selEl.innerHTML = `<option value="">${label}</option>` + values.map(v => `<option>${escapeHtml(v)}</option>`).join("");
   };
@@ -1403,14 +1403,14 @@ function renderStatus(status) {
   if (!status) return "";
   const s = String(status);
   const colors = {
-    "Admitted":           "#276749",
-    "Verified":           "#276749",
-    "Under Review":       "#b7791f",
-    "Documents Pending":  "#b7791f",
-    "Fee Pending":        "#b7791f",
-    "On Hold":            "#718096",
-    "Rejected":           "#c53030",
-    "Withdrawn":          "#c53030"
+    "Application Done":      "#276749",
+    "Admission Done":        "#276749",
+    "Half Form":             "#b7791f",
+    "Test Pending":          "#b7791f",
+    "PI Pending":            "#d97706",
+    "Application Hold":      "#718096",
+    "Application Cancelled": "#c53030",
+    "Admission Cancelled":   "#c53030"
   };
   const color = colors[s] || "#64748b";
   return `<span style="display:inline-block;padding:3px 10px;border-radius:12px;background:${color}15;color:${color};font-size:11px;font-weight:600;">${escapeHtml(s)}</span>`;
@@ -1431,27 +1431,28 @@ const filterStream = document.getElementById("filterStream");
 const filterManager = document.getElementById("filterManager");
 const filterTeamLeader = document.getElementById("filterTeamLeader");
 
+function normalise(v) { return (v || "").toString().trim().toLowerCase(); }
+
 function applyFilters() {
-  const q = searchBox.value.trim().toLowerCase();
-  const u = filterUniversity.value;
-  const c = filterCampus.value;
-  const st = filterStatus.value;
-  const sm = filterStream.value;
-  const m = filterManager.value;
-  const tl = filterTeamLeader.value;
+  const q  = searchBox.value.trim().toLowerCase();
+  const u  = filterUniversity.value.trim();
+  const c  = filterCampus.value.trim();
+  const st = filterStatus.value.trim();
+  const sm = filterStream.value.trim();
+  const m  = filterManager.value.trim();
+  const tl = filterTeamLeader.value.trim();
 
   const filtered = allEntries.filter(row => {
-    if (u  && (row["University Name"]     || "").toString() !== u)  return false;
-    if (c  && (row["Campus"]              || "").toString() !== c)  return false;
-    if (st && (row["Application Status"]  || "").toString() !== st) return false;
-    if (sm && (row["Stream"]              || "").toString() !== sm) return false;
-    if (m  && (row["Manager"]             || "").toString() !== m)  return false;
-    if (tl && (row["Team Leader"]         || "").toString() !== tl) return false;
+    if (u  && (row["University Name"]    || "").toString().trim() !== u)  return false;
+    if (c  && (row["Campus"]             || "").toString().trim() !== c)  return false;
+    if (st && (row["Application Status"] || "").toString().trim() !== st) return false;
+    if (sm && (row["Stream"]             || "").toString().trim() !== sm) return false;
+    if (m  && (row["Manager"]            || "").toString().trim() !== m)  return false;
+    if (tl && (row["Team Leader"]        || "").toString().trim() !== tl) return false;
     if (q) {
-      // Search everything except the Password field (avoid accidental matches)
       const haystack = Object.entries(row)
         .filter(([k]) => k !== "Password")
-        .map(([, v]) => v)
+        .map(([, v]) => String(v || ""))
         .join(" ")
         .toLowerCase();
       if (!haystack.includes(q)) return false;
@@ -1464,12 +1465,12 @@ function applyFilters() {
 
 function clearFilters() {
   searchBox.value = "";
-  filterUniversity.value = "";
-  filterCampus.value = "";
-  filterStatus.value = "";
-  filterStream.value = "";
-  filterManager.value = "";
-  filterTeamLeader.value = "";
+  filterUniversity.selectedIndex = 0;
+  filterCampus.selectedIndex = 0;
+  filterStatus.selectedIndex = 0;
+  filterStream.selectedIndex = 0;
+  filterManager.selectedIndex = 0;
+  filterTeamLeader.selectedIndex = 0;
   renderTable(allEntries);
   updateStats(allEntries);
 }
