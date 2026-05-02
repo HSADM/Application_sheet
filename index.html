@@ -453,12 +453,12 @@
   /* ── Stat Cards ── */
   .dash-stats {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(12, 1fr);
     gap: 10px;
     margin-top: 18px;
   }
-  @media (max-width: 1100px) {
-    .dash-stats { grid-template-columns: repeat(5, 1fr); }
+  @media (max-width: 1200px) {
+    .dash-stats { grid-template-columns: repeat(6, 1fr); }
   }
   @media (max-width: 700px) {
     .dash-stats { grid-template-columns: repeat(3, 1fr); }
@@ -491,6 +491,9 @@
   .stat-cancelled::before   { background: linear-gradient(90deg,#c53030,#e53e3e); }
   .stat-admitted::before    { background: linear-gradient(90deg,#065f46,#059669); }
   .stat-adm-cancelled::before { background: linear-gradient(90deg,#7b341e,#c05621); }
+  .stat-ol-released::before  { background: linear-gradient(90deg,#065f46,#10b981); }
+  .stat-ol-hold::before      { background: linear-gradient(90deg,#1e40af,#3b82f6); }
+  .stat-ol-pending::before   { background: linear-gradient(90deg,#6d28d9,#8b5cf6); }
   .stat-total .stat-num   { color: #1a365d; }
   .stat-done .stat-num    { color: #276749; }
   .stat-half .stat-num    { color: #b7791f; }
@@ -500,6 +503,9 @@
   .stat-cancelled .stat-num   { color: #c53030; }
   .stat-admitted .stat-num    { color: #065f46; }
   .stat-adm-cancelled .stat-num { color: #7b341e; }
+  .stat-ol-released .stat-num  { color: #065f46; }
+  .stat-ol-hold .stat-num      { color: #1e40af; }
+  .stat-ol-pending .stat-num   { color: #6d28d9; }
   .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
   .stat-num {
     font-size: 24px;
@@ -1062,6 +1068,9 @@
             <option>Application Hold</option>
             <option>Admission Done</option>
             <option>Admission Cancelled</option>
+            <option>OL Released</option>
+            <option>OL on Hold</option>
+            <option>OL Pending</option>
           </select>
           <div class="field-error">Please select status</div>
         </div>
@@ -1394,6 +1403,9 @@
           <div class="stat-card stat-cancelled"><div class="stat-num" id="statAppCancelled">0</div><div class="stat-label">App Cancelled</div></div>
           <div class="stat-card stat-admitted"><div class="stat-num" id="statAdmDone">0</div><div class="stat-label">Admission Done</div></div>
           <div class="stat-card stat-adm-cancelled"><div class="stat-num" id="statAdmCancelled">0</div><div class="stat-label">Adm Cancelled</div></div>
+          <div class="stat-card stat-ol-released"><div class="stat-num" id="statOLReleased">0</div><div class="stat-label">OL Released</div></div>
+          <div class="stat-card stat-ol-hold"><div class="stat-num" id="statOLHold">0</div><div class="stat-label">OL on Hold</div></div>
+          <div class="stat-card stat-ol-pending"><div class="stat-num" id="statOLPending">0</div><div class="stat-label">OL Pending</div></div>
         </div>
 
         <div class="filter-bar">
@@ -1465,6 +1477,9 @@
               <option>Application Hold</option>
               <option>Admission Done</option>
               <option>Admission Cancelled</option>
+              <option>OL Released</option>
+              <option>OL on Hold</option>
+              <option>OL Pending</option>
             </select>
           </div>
         </div>
@@ -1818,6 +1833,9 @@ function updateStats(entries) {
     "Application Cancelled": 0,
     "Admission Done":        0,
     "Admission Cancelled":   0,
+    "OL Released":           0,
+    "OL on Hold":            0,
+    "OL Pending":            0,
   };
   entries.forEach(e => {
     const s = (e["Application Status"] || "").trim();
@@ -1833,6 +1851,9 @@ function updateStats(entries) {
   animateNum("statAppCancelled", counts["Application Cancelled"]);
   animateNum("statAdmDone",      counts["Admission Done"]);
   animateNum("statAdmCancelled", counts["Admission Cancelled"]);
+  animateNum("statOLReleased",   counts["OL Released"]);
+  animateNum("statOLHold",       counts["OL on Hold"]);
+  animateNum("statOLPending",    counts["OL Pending"]);
 
   const rc = document.getElementById("resultCount");
   if (rc) rc.textContent = entries.length + " entr" + (entries.length === 1 ? "y" : "ies");
@@ -1983,7 +2004,10 @@ function renderStatus(status) {
     "PI Pending":            "#d97706",
     "Application Hold":      "#718096",
     "Application Cancelled": "#c53030",
-    "Admission Cancelled":   "#c53030"
+    "Admission Cancelled":   "#c53030",
+    "OL Released":           "#065f46",
+    "OL on Hold":            "#1e40af",
+    "OL Pending":            "#6d28d9"
   };
   const color = colors[s] || "#64748b";
   return `<span style="display:inline-block;padding:3px 10px;border-radius:12px;background:${color}15;color:${color};font-size:11px;font-weight:600;">${escapeHtml(s)}</span>`;
