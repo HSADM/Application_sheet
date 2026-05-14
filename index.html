@@ -1143,9 +1143,9 @@
         <div class="section-title">Application Details</div>
 
         <div class="field">
-          <label>Application Number <span class="req">*</span></label>
-          <input type="text" name="Application Number" placeholder="e.g. AU/UG/26/12149" required>
-          <div class="field-error">Application number is required</div>
+          <label id="appNumberLabel">Application Number <span class="req">*</span></label>
+          <input type="text" id="appNumberInput" name="Application Number" placeholder="e.g. AU/UG/26/12149" required>
+          <div class="field-error" id="appNumberError">Application number is required</div>
         </div>
 
         <div class="field">
@@ -1313,10 +1313,11 @@
           </select>
         </div>
 
-        <div class="field">
-          <label>Referral Code</label>
-          <input type="text" name="Referral Code" placeholder="If applicable">
-          <div class="hint">Leave blank if none</div>
+        <div class="field" id="referralCodeField">
+          <label id="referralCodeLabel">Referral Code</label>
+          <input type="text" id="referralCodeInput" name="Referral Code" placeholder="If applicable">
+          <div class="hint" id="referralCodeHint">Leave blank if none</div>
+          <div class="field-error" id="referralCodeError">Referral Code is required for Amity</div>
         </div>
 
 
@@ -3278,6 +3279,96 @@ function json(obj) {
 }
 
 
+
+
+// ══════════════════════════════════════════════════════════════
+// AMITY UNIVERSITY — Dynamic field rules
+// ══════════════════════════════════════════════════════════════
+(function() {
+  const uniSelect      = document.querySelector('select[name="University Name"]');
+  const appInput       = document.getElementById("appNumberInput");
+  const appLabel       = document.getElementById("appNumberLabel");
+  const appError       = document.getElementById("appNumberError");
+  const refField       = document.getElementById("referralCodeField");
+  const refLabel       = document.getElementById("referralCodeLabel");
+  const refInput       = document.getElementById("referralCodeInput");
+  const refHint        = document.getElementById("referralCodeHint");
+  const refError       = document.getElementById("referralCodeError");
+
+  if (!uniSelect || !appInput) return;
+
+  function isAmity() {
+    return (uniSelect.value || "").trim().toLowerCase() === "amity";
+  }
+
+  function applyAmityRules() {
+    if (isAmity()) {
+      // Application Number — 8 digit only
+      appInput.placeholder     = "Enter 8-digit number (e.g. 12345678)";
+      appInput.maxLength       = 8;
+      appInput.pattern         = "\d{8}";
+      appInput.inputMode       = "numeric";
+      if (appLabel) appLabel.innerHTML = 'Application Number <span class="req">*</span> <span style="font-size:10px;color:#c05621;font-weight:600;">(8 digits only)</span>';
+      if (appError) appError.textContent = "Amity requires an 8-digit application number";
+
+      // Referral Code — mandatory
+      if (refLabel) refLabel.innerHTML = 'Referral Code <span class="req">*</span>';
+      if (refInput) refInput.required = true;
+      if (refHint)  refHint.style.display = "none";
+
+    } else {
+      // Reset to defaults
+      appInput.placeholder = "e.g. AU/UG/26/12149";
+      appInput.removeAttribute("maxLength");
+      appInput.removeAttribute("pattern");
+      appInput.removeAttribute("inputMode");
+      if (appLabel) appLabel.innerHTML = 'Application Number <span class="req">*</span>';
+      if (appError) appError.textContent = "Application number is required";
+
+      // Referral Code — optional
+      if (refLabel) refLabel.innerHTML = 'Referral Code';
+      if (refInput) refInput.required = false;
+      if (refHint)  refHint.style.display = "";
+    }
+
+    // Clear any validation state when switching
+    [appInput, refInput].forEach(el => {
+      if (el) el.classList.remove("invalid");
+    });
+  }
+
+  // Custom validation hook for 8-digit check
+  const origValidateField = window.validateField;
+  window.validateField = function(field) {
+    // Extra Amity check for Application Number
+    if (field === appInput && isAmity()) {
+      const val = field.value.trim();
+      if (!/^\d{8}$/.test(val)) {
+        field.classList.add("invalid");
+        if (appError) appError.textContent = "Amity requires exactly 8 digits";
+        return false;
+      }
+      field.classList.remove("invalid");
+      return true;
+    }
+    // Referral Code required for Amity
+    if (field === refInput && isAmity()) {
+      const val = field.value.trim();
+      if (!val) {
+        field.classList.add("invalid");
+        return false;
+      }
+      field.classList.remove("invalid");
+      return true;
+    }
+    // Default validation
+    if (origValidateField) return origValidateField(field);
+    return true;
+  };
+
+  uniSelect.addEventListener("change", applyAmityRules);
+  applyAmityRules(); // run on load in case pre-selected
+})();
 
 </script>
 </body>
