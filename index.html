@@ -2468,7 +2468,7 @@
 // ════════════════════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════════════════════
-const API_URL = "https://script.google.com/macros/s/AKfycbxckl2Qx8IxNa0h-DkFPD1m0WAfe6zZrfLcfeg6PPSWjJ-BFBiJwtnIfdy7Os8R_R1_bA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz9JtiohQ5rJYk3zRkIhfAZ2epzmFOJL0ScV-LUdOTyQVgIOYJn_v_JbSJHdm-SzwxSZw/exec";
 const ADMIN_PIN = "Higher2026"; // ← Change this password
 
 // ════════════════════════════════════════════════════════════
@@ -3252,11 +3252,6 @@ form.addEventListener("submit", async (e) => {
 
   const data = {};
   new FormData(form).forEach((value, key) => { data[key] = value.trim(); });
-  // Merge Course Specialization into Programme Selected as one combined value
-  if (data["Course Specialization"]) {
-    data["Programme Selected"] = (data["Programme Selected"] ? data["Programme Selected"] + " - " : "") + data["Course Specialization"];
-    delete data["Course Specialization"];
-  }
 
   // ── Set date immediately ────────────────────────────────────────
   const _now = new Date();
@@ -3283,12 +3278,15 @@ form.addEventListener("submit", async (e) => {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout per attempt
 
+      const payload = { action: "submitApplication", ...data };
+      console.log("Sending payload:", JSON.stringify(payload));
       const res = await fetch(API_URL, {
         method : "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body   : JSON.stringify({ action: "submitApplication", ...data }),
+        body   : JSON.stringify(payload),
         signal : controller.signal,
       });
+      console.log("Response status:", res.status, "type:", res.type);
       clearTimeout(timeout);
 
       // Apps Script CORS = opaque (type==="opaque") or status 0 — both mean success
@@ -3303,33 +3301,17 @@ form.addEventListener("submit", async (e) => {
         if (attempts < MAX_ATTEMPTS) await new Promise(r => setTimeout(r, 1000 * attempts));
       }
     } catch(err) {
-      clearTimeout && clearTimeout();
       if (err.name === "AbortError") {
-        console.warn("Attempt " + attempts + " timed out");
-      } else if (err.message && (err.message.includes("Failed to fetch") || err.message.includes("NetworkError") || err.message.includes("opaque"))) {
-        // CORS opaque pattern from Apps Script — request DID reach the server
-        saved = true;
+        console.warn("Attempt " + attempts + " timed out — retrying");
       } else {
         console.warn("Attempt " + attempts + " error:", err.message);
       }
-      if (!saved && attempts < MAX_ATTEMPTS) await new Promise(r => setTimeout(r, 1000 * attempts));
+      if (attempts < MAX_ATTEMPTS) await new Promise(r => setTimeout(r, 1500 * attempts));
     }
   }
 
   submitBtn.disabled = false;
   submitBtn.innerHTML = "Submit Entry";
-
-  // Bust server cache so all users see new submission immediately
-  if (saved) {
-    try {
-      fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "bustCache" }),
-      });
-    } catch(e) {}
-    localStorage.setItem("portal_last_update", Date.now().toString());
-  }
 
   if (saved) {
     showSuccessScreen(data);
